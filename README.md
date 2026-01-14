@@ -90,6 +90,7 @@ npm run dev
    - 생성된 서비스에서 "Settings" 탭으로 이동
    - **Root Directory**: `apps/api` 설정 ⭐
    - 이렇게 하면 Railway가 `apps/api` 폴더를 루트로 인식합니다
+   - ⚠️ **Node.js 버전**: Railway가 자동으로 `.nvmrc` 파일을 읽어 Node.js 20을 사용합니다
 
 4. **환경변수 설정**
    - Railway 대시보드 → "Variables" 탭에서 추가:
@@ -99,21 +100,18 @@ npm run dev
      CORS_ORIGIN=https://your-vercel-app.vercel.app
      PORT=4000
      ```
+   - ⚠️ **중요**: `DATABASE_URL`은 PostgreSQL 데이터베이스를 추가하면 자동으로 설정됩니다
 
 5. **빌드/실행 명령어 설정**
-   - "Settings" → "Deploy" 섹션에서:
-     - **Build Command**: `npm install && npm -w apps/api run build`
-     - **Start Command**: `npm -w apps/api run start`
-   - 또는 `apps/api/package.json`의 스크립트를 사용:
-     - Build: `npm install && npm run build` (Root Directory가 `apps/api`이므로)
-     - Start: `npm run start`
+   - `apps/api/railway.json` 파일이 자동으로 설정을 적용합니다
+   - 또는 "Settings" → "Deploy" 섹션에서 수동 설정:
+     - **Build Command**: `npm install && npm run build` (Root Directory가 `apps/api`이므로)
+     - **Start Command**: `npm run prisma:migrate:deploy && npm run start`
+   - ⚠️ **참고**: `npm install` 실행 시 `postinstall` 스크립트가 자동으로 `prisma generate`를 실행합니다
 
 6. **Prisma 마이그레이션 실행**
-   - Railway 대시보드 → "Deployments" → 최신 배포의 "View Logs"에서:
-     - 또는 "Settings" → "Deploy" → "Deploy Command"에 추가:
-       ```
-       npm install && npm run prisma:generate && npm run prisma:migrate && npm run build
-       ```
+   - Start Command에 `npm run prisma:migrate:deploy`가 포함되어 있어 자동 실행됩니다
+   - 또는 수동으로 실행하려면 Railway 대시보드 → "Deployments" → 최신 배포의 "View Logs"에서 확인
 
 ### Vercel (프론트엔드 Web)
 
