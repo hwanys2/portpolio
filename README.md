@@ -86,10 +86,10 @@ npm run dev
    - Railway 대시보드에서 "New" → "Database" → "PostgreSQL" 선택
    - 생성된 `DATABASE_URL` 환경변수 자동 설정됨
 
-3. **서비스 설정 (Root Directory 지정)**
+3. **서비스 설정 (Root Directory)**
    - 생성된 서비스에서 "Settings" 탭으로 이동
-   - **Root Directory**: `apps/api` 설정 ⭐
-   - 이렇게 하면 Railway가 `apps/api` 폴더를 루트로 인식합니다
+   - **Root Directory**: 비워두기 (루트에서 실행) ⭐
+   - ⚠️ **중요**: Root Directory를 설정하지 마세요. 루트의 `railway.json` 파일이 자동으로 설정을 적용합니다
    - ⚠️ **Node.js 버전**: Railway가 자동으로 `.nvmrc` 파일을 읽어 Node.js 20을 사용합니다
 
 4. **환경변수 설정**
@@ -103,15 +103,15 @@ npm run dev
    - ⚠️ **중요**: `DATABASE_URL`은 PostgreSQL 데이터베이스를 추가하면 자동으로 설정됩니다
 
 5. **빌드/실행 명령어 설정**
-   - `apps/api/railway.json` 파일이 자동으로 설정을 적용합니다
-   - 또는 "Settings" → "Deploy" 섹션에서 수동 설정:
-     - **Build Command**: `npm install && npm run build` (Root Directory가 `apps/api`이므로)
-     - **Start Command**: `npm run prisma:migrate:deploy && npm run start`
+   - 루트의 `railway.json` 파일이 자동으로 설정을 적용합니다:
+     - **Build Command**: `npm install && npm -w apps/api run build`
+     - **Start Command**: `npm -w apps/api run prisma:migrate:deploy && npm -w apps/api run start`
+   - 수동으로 설정하려면 "Settings" → "Deploy" 섹션에서 위 명령어 입력
    - ⚠️ **참고**: `npm install` 실행 시 `postinstall` 스크립트가 자동으로 `prisma generate`를 실행합니다
 
 6. **Prisma 마이그레이션 실행**
-   - Start Command에 `npm run prisma:migrate:deploy`가 포함되어 있어 자동 실행됩니다
-   - 또는 수동으로 실행하려면 Railway 대시보드 → "Deployments" → 최신 배포의 "View Logs"에서 확인
+   - Start Command에 `prisma:migrate:deploy`가 포함되어 있어 자동 실행됩니다
+   - 배포 로그에서 마이그레이션 실행 여부를 확인할 수 있습니다
 
 ### Vercel (프론트엔드 Web)
 
@@ -119,12 +119,10 @@ npm run dev
    - [Vercel](https://vercel.com)에 로그인 후 새 프로젝트 생성
    - GitHub 레포지토리 연결: `https://github.com/hwanys2/portpolio.git`
 
-2. **프로젝트 설정 (Root Directory 지정)**
-   - ⚠️ **중요**: 모노레포 구조이므로 Root Directory를 **루트(`/`)로 설정**해야 합니다 ⭐
+2. **프로젝트 설정 (Root Directory)**
    - "Configure Project" 화면에서:
-     - **Root Directory**: 비워두거나 `/`로 설정 (기본값 유지)
-     - 또는 배포 후 "Settings" → "General" → "Root Directory"에서 확인
-   - 루트에 `vercel.json` 파일이 있어서 자동으로 빌드 설정이 적용됩니다
+     - **Root Directory**: 비워두기 (루트에서 실행) ⭐
+   - ⚠️ **중요**: Root Directory를 설정하지 마세요. 루트의 `vercel.json` 파일이 자동으로 설정을 적용합니다
 
 3. **빌드 설정 (자동 적용)**
    - 루트의 `vercel.json` 파일이 다음 설정을 자동으로 적용합니다:
@@ -135,12 +133,12 @@ npm run dev
        "framework": "nextjs"
      }
      ```
+   - Vercel이 자동으로 `VERCEL` 환경변수를 설정하므로, `apps/api`의 `postinstall` 스크립트가 건너뛰어집니다
    - 수동으로 설정하려면 "Settings" → "General" → "Build & Development Settings":
      - **Framework Preset**: Next.js
-     - **Root Directory**: `/` (루트, 비워두기)
+     - **Root Directory**: 비워두기
      - **Build Command**: `npm install && npm -w apps/web run build`
      - **Output Directory**: `apps/web/.next`
-     - **Install Command**: `npm install` (루트에서 실행)
 
 4. **환경변수 설정**
    - "Settings" → "Environment Variables"에서 추가:
