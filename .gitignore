@@ -6,7 +6,10 @@
 **/.env
 **/.env.*
 !.env.example
-!.env.local.example
+!**.env.local.example
 **/generated/
 **/.vercel/
+# Prisma config files (not needed, using default schema.prisma)
+**/prisma.config.js
+**/prisma.config.ts
 

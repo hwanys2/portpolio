@@ -3,3 +3,7 @@ node_modules
 .env
 
 /generated/prisma
+# Prisma config files (not needed, using default schema.prisma)
+prisma.config.js
+prisma.config.ts
+dist/
