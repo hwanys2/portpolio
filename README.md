@@ -81,18 +81,26 @@ npm run dev
 1. **Railway 프로젝트 생성**
    - [Railway](https://railway.app)에 로그인 후 새 프로젝트 생성
    - GitHub 레포지토리 연결: `https://github.com/hwanys2/portpolio.git`
+   - ⚠️ **중요**: Railway가 자동으로 여러 서비스를 감지할 수 있습니다. **하나의 서비스만** 생성하세요
 
 2. **PostgreSQL 데이터베이스 추가**
    - Railway 대시보드에서 "New" → "Database" → "PostgreSQL" 선택
    - 생성된 `DATABASE_URL` 환경변수 자동 설정됨
+   - ⚠️ **중요**: 데이터베이스는 **별도 서비스**로 생성되지만, 이것은 정상입니다
 
-3. **서비스 설정 (Root Directory)**
-   - 생성된 서비스에서 "Settings" 탭으로 이동
+3. **서비스 정리 (매우 중요!)**
+   - Railway 대시보드에서 서비스 목록 확인
+   - **"web" 서비스가 있다면 삭제**하세요 (프론트엔드는 API 서버에 통합되어 있습니다)
+   - **하나의 서비스만** 남겨야 합니다 (이름은 "api" 또는 프로젝트 이름)
+   - 데이터베이스 서비스는 별도로 유지
+
+4. **서비스 설정 (Root Directory)**
+   - 남아있는 하나의 서비스에서 "Settings" 탭으로 이동
    - **Root Directory**: 비워두기 (루트에서 실행) ⭐
    - ⚠️ **중요**: Root Directory를 설정하지 마세요. 루트의 `railway.json` 파일이 자동으로 설정을 적용합니다
    - ⚠️ **Node.js 버전**: Railway가 자동으로 `.nvmrc` 파일을 읽어 Node.js 20을 사용합니다
 
-4. **환경변수 설정**
+5. **환경변수 설정**
    - Railway 대시보드 → "Variables" 탭에서 추가:
      ```
      DATABASE_URL=<Railway가 자동 생성한 PostgreSQL URL>
@@ -106,21 +114,21 @@ npm run dev
      - **하나의 서비스만** 사용하세요 (프론트엔드와 백엔드가 통합되어 있습니다)
      - 별도의 "web" 서비스를 만들지 마세요
 
-5. **빌드/실행 명령어 설정**
+6. **빌드/실행 명령어 설정**
    - 루트의 `railway.json` 파일이 자동으로 설정을 적용합니다:
      - **Build Command**: `npm install && npm -w apps/api run build`
      - **Start Command**: `npm -w apps/api run prisma:migrate:deploy && npm -w apps/api run start`
    - 수동으로 설정하려면 "Settings" → "Deploy" 섹션에서 위 명령어 입력
    - ⚠️ **참고**: `npm install` 실행 시 `postinstall` 스크립트가 자동으로 `prisma generate`를 실행합니다
 
-6. **Prisma 마이그레이션 실행**
+7. **Prisma 마이그레이션 실행**
    - Start Command에 `prisma:migrate:deploy`가 포함되어 있어 자동 실행됩니다
    - 배포 로그에서 마이그레이션 실행 여부를 확인할 수 있습니다
 
-7. **⚠️ 중요: 하나의 서비스만 사용**
-   - Railway에서 **하나의 서비스만** 생성하세요
-   - 프론트엔드와 백엔드가 Express 서버 하나에서 모두 처리됩니다
-   - 별도의 "web" 서비스를 만들면 `DATABASE_URL`이 없어서 오류가 발생합니다
+8. **⚠️ 문제 해결: 여러 서비스가 생성된 경우**
+   - Railway가 자동으로 `apps/api`와 `apps/web`을 별도 서비스로 감지할 수 있습니다
+   - 이 경우 **"web" 서비스를 삭제**하고 **하나의 서비스만** 사용하세요
+   - 프론트엔드와 백엔드가 Express 서버 하나에서 모두 처리되므로 별도 서비스가 필요 없습니다
 
 ### 배포 후 확인
 
