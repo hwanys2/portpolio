@@ -1,35 +1,47 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import next from "next";
+import path from "path";
 import { env } from "./env";
 import { authRouter } from "./routes/auth";
 import { assetsRouter } from "./routes/assets";
 import { portfoliosRouter } from "./routes/portfolios";
 
-const app = express();
+const dev = env.NODE_ENV !== "production";
+const nextApp = next({ dev, dir: path.join(__dirname, "../../web") });
+const handle = nextApp.getRequestHandler();
 
-app.use(
-  cors({
-    origin: env.CORS_ORIGIN.split(",").map((s) => s.trim()),
-    credentials: true,
-  }),
-);
-app.use(express.json({ limit: "1mb" }));
+nextApp.prepare().then(() => {
+  const app = express();
 
-app.get("/health", (_req, res) => res.json({ ok: true }));
-app.use("/auth", authRouter);
-app.use("/assets", assetsRouter);
-app.use("/portfolios", portfoliosRouter);
+  app.use(
+    cors({
+      origin: env.CORS_ORIGIN.split(",").map((s) => s.trim()),
+      credentials: true,
+    }),
+  );
+  app.use(express.json({ limit: "1mb" }));
 
-app.use((err: any, _req: any, res: any, _next: any) => {
-  // eslint-disable-next-line no-console
-  console.error(err);
-  res.status(500).json({ error: "Internal server error" });
+  // API routes
+  app.get("/health", (_req, res) => res.json({ ok: true }));
+  app.use("/api/auth", authRouter);
+  app.use("/api/assets", assetsRouter);
+  app.use("/api/portfolios", portfoliosRouter);
+
+  // Next.js handles all other routes
+  app.all("*", (req, res) => {
+    return handle(req, res);
+  });
+
+  app.use((err: any, _req: any, res: any, _next: any) => {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  });
+
+  app.listen(env.PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Server listening on :${env.PORT}`);
+  });
 });
-
-app.listen(env.PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`API listening on :${env.PORT}`);
-});
-
-
