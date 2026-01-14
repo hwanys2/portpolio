@@ -5,6 +5,7 @@ import { requireAuth } from "../middleware/auth";
 import { quoteSymbol } from "../lib/yahoo";
 import { decToNumber, toDecimal } from "../lib/decimal";
 import type { Decimal } from "@prisma/client/runtime/library";
+import type { Prisma } from "@prisma/client";
 
 export const portfoliosRouter = Router();
 
@@ -83,7 +84,7 @@ portfoliosRouter.post("/", requireAuth, async (req, res) => {
     }),
   );
 
-  const portfolio = await prisma.$transaction(async (tx: typeof prisma) => {
+  const portfolio = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const created = await tx.portfolio.create({
       data: {
         userId: req.auth!.userId,
@@ -129,8 +130,9 @@ portfoliosRouter.post("/", requireAuth, async (req, res) => {
     return created;
   });
 
+  const typed = portfolio as unknown as PortfolioListRow;
   return res.status(201).json({
-    portfolio: { ...portfolio, initialInvestAmount: decToNumber(portfolio.initialInvestAmount) },
+    portfolio: { ...typed, initialInvestAmount: decToNumber(typed.initialInvestAmount) },
   });
 });
 

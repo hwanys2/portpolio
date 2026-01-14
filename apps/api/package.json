@@ -14,7 +14,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
-    "postinstall": "if [ -z \"$VERCEL\" ]; then prisma generate; fi"
+    "postinstall": "node scripts/postinstall.js"
   },
   "keywords": [],
   "author": "",
