@@ -122,19 +122,27 @@ npm run dev
    - GitHub 레포지토리 연결: `https://github.com/hwanys2/portpolio.git`
 
 2. **프로젝트 설정 (Root Directory 지정)**
+   - ⚠️ **중요**: 모노레포 구조이므로 Root Directory를 **루트(`/`)로 설정**해야 합니다 ⭐
    - "Configure Project" 화면에서:
-     - **Root Directory**: `apps/web` 설정 ⭐
-     - "Edit" 클릭 → `apps/web` 입력 → "Continue"
-   - 또는 배포 후 "Settings" → "General" → "Root Directory"에서 변경 가능
+     - **Root Directory**: 비워두거나 `/`로 설정 (기본값 유지)
+     - 또는 배포 후 "Settings" → "General" → "Root Directory"에서 확인
+   - 루트에 `vercel.json` 파일이 있어서 자동으로 빌드 설정이 적용됩니다
 
-3. **빌드 설정**
-   - Vercel이 자동으로 감지하지만, 명시적으로 설정하려면:
-     - "Settings" → "General" → "Build & Development Settings":
-       - **Framework Preset**: Next.js
-       - **Root Directory**: `apps/web`
-       - **Build Command**: `npm run build` (Root Directory가 `apps/web`이므로 자동)
-       - **Output Directory**: `.next` (기본값)
-       - **Install Command**: `npm install` (루트에서 실행되므로 `npm -w apps/web install` 필요 없음)
+3. **빌드 설정 (자동 적용)**
+   - 루트의 `vercel.json` 파일이 다음 설정을 자동으로 적용합니다:
+     ```json
+     {
+       "buildCommand": "npm install && npm -w apps/web run build",
+       "outputDirectory": "apps/web/.next",
+       "framework": "nextjs"
+     }
+     ```
+   - 수동으로 설정하려면 "Settings" → "General" → "Build & Development Settings":
+     - **Framework Preset**: Next.js
+     - **Root Directory**: `/` (루트, 비워두기)
+     - **Build Command**: `npm install && npm -w apps/web run build`
+     - **Output Directory**: `apps/web/.next`
+     - **Install Command**: `npm install` (루트에서 실행)
 
 4. **환경변수 설정**
    - "Settings" → "Environment Variables"에서 추가:
