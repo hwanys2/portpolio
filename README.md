@@ -97,10 +97,14 @@ npm run dev
      ```
      DATABASE_URL=<Railway가 자동 생성한 PostgreSQL URL>
      JWT_SECRET=<최소 16자 이상의 랜덤 문자열>
-     CORS_ORIGIN=https://your-vercel-app.vercel.app
+     CORS_ORIGIN=*
      PORT=4000
+     NODE_ENV=production
      ```
-   - ⚠️ **중요**: `DATABASE_URL`은 PostgreSQL 데이터베이스를 추가하면 자동으로 설정됩니다
+   - ⚠️ **중요**: 
+     - `DATABASE_URL`은 PostgreSQL 데이터베이스를 추가하면 자동으로 설정됩니다
+     - **하나의 서비스만** 사용하세요 (프론트엔드와 백엔드가 통합되어 있습니다)
+     - 별도의 "web" 서비스를 만들지 마세요
 
 5. **빌드/실행 명령어 설정**
    - 루트의 `railway.json` 파일이 자동으로 설정을 적용합니다:
@@ -113,56 +117,17 @@ npm run dev
    - Start Command에 `prisma:migrate:deploy`가 포함되어 있어 자동 실행됩니다
    - 배포 로그에서 마이그레이션 실행 여부를 확인할 수 있습니다
 
-### Vercel (프론트엔드 Web)
-
-1. **Vercel 프로젝트 생성**
-   - [Vercel](https://vercel.com)에 로그인 후 새 프로젝트 생성
-   - GitHub 레포지토리 연결: `https://github.com/hwanys2/portpolio.git`
-
-2. **프로젝트 설정 (Root Directory)**
-   - "Configure Project" 화면에서:
-     - **Root Directory**: 비워두기 (루트에서 실행) ⭐
-   - ⚠️ **중요**: Root Directory를 설정하지 마세요. 루트의 `vercel.json` 파일이 자동으로 설정을 적용합니다
-
-3. **빌드 설정 (자동 적용)**
-   - 루트의 `vercel.json` 파일이 다음 설정을 자동으로 적용합니다:
-     ```json
-     {
-       "buildCommand": "npm install && npm -w apps/web run build",
-       "outputDirectory": "apps/web/.next",
-       "framework": "nextjs"
-     }
-     ```
-   - Vercel이 자동으로 `VERCEL` 환경변수를 설정하므로, `apps/api`의 `postinstall` 스크립트가 건너뛰어집니다
-   - 수동으로 설정하려면 "Settings" → "General" → "Build & Development Settings":
-     - **Framework Preset**: Next.js
-     - **Root Directory**: 비워두기
-     - **Build Command**: `npm install && npm -w apps/web run build`
-     - **Output Directory**: `apps/web/.next`
-
-4. **환경변수 설정**
-   - "Settings" → "Environment Variables"에서 추가:
-     ```
-     NEXT_PUBLIC_API_URL=https://your-api.up.railway.app
-     ```
-   - ⚠️ **주의**: Railway API URL은 배포 후 실제 URL로 변경해야 합니다.
-
-5. **배포**
-   - GitHub에 푸시하면 자동 배포됩니다.
-   - 또는 Vercel 대시보드에서 "Deployments" → "Redeploy" 클릭
+7. **⚠️ 중요: 하나의 서비스만 사용**
+   - Railway에서 **하나의 서비스만** 생성하세요
+   - 프론트엔드와 백엔드가 Express 서버 하나에서 모두 처리됩니다
+   - 별도의 "web" 서비스를 만들면 `DATABASE_URL`이 없어서 오류가 발생합니다
 
 ### 배포 후 확인
 
-1. **Railway API 확인**
-   - Railway 대시보드에서 생성된 도메인 확인 (예: `https://your-api.up.railway.app`)
-   - 브라우저에서 `https://your-api.up.railway.app/health` 접속 → `{"status":"ok"}` 응답 확인
-
-2. **Vercel 프론트엔드 확인**
-   - Vercel 대시보드에서 생성된 도메인 확인
-   - 브라우저에서 접속하여 로그인/회원가입 테스트
-
-3. **CORS 설정 업데이트**
-   - Railway 환경변수 `CORS_ORIGIN`을 Vercel 도메인으로 업데이트
-   - Railway 서비스 재배포 필요
+1. **Railway 서비스 확인**
+   - Railway 대시보드에서 생성된 도메인 확인 (예: `https://your-app.up.railway.app`)
+   - 브라우저에서 `https://your-app.up.railway.app/health` 접속 → `{"ok":true}` 응답 확인
+   - 브라우저에서 `https://your-app.up.railway.app` 접속하여 웹사이트 확인
+   - 로그인/회원가입 테스트
 
 
