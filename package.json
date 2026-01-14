@@ -1,0 +1,22 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently -n api,web -c blue,green \"npm -w apps/api run dev\" \"npm -w apps/web run dev\"",
+    "build": "npm -w apps/api run build && npm -w apps/web run build",
+    "start": "npm -w apps/api run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "private": "true",
+  "workspaces": [
+    "apps/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
